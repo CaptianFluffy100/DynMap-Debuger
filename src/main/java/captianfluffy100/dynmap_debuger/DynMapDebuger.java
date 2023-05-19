@@ -40,7 +40,10 @@ public class DynMapDebuger implements ModInitializer {
             public void apiEnabled(DynmapCommonAPI api) {
                 // Get the MarkerAPI instance
                 markerAPI = api.getMarkerAPI();
-                LOGGER.info(logHeader + "(API)" + markerAPI);
+                LOGGER.info(logHeader + "(API) " + markerAPI);
+            }
+            public void apiDisabled(DynmapCommonAPI api) {
+                LOGGER.info(logHeader + "(API) Dynmap closed or crashed");
             }
         });
         ServerChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
@@ -66,8 +69,8 @@ public class DynMapDebuger implements ModInitializer {
     
         // Create a marker ID based on the dimension and chunk coordinates
         String markerId = dimension + "_" + chunkPos.x + "_" + chunkPos.z;
-        LOGGER.info(logHeader + "CHUNK LOADED: " + markerId);
-    
+        // LOGGER.info(logHeader + "CHUNK LOADED: " + markerId);
+        
         // Check if the marker already exists
         MarkerSet set = markerAPI.getMarkerSet(markerId);
         if (set == null) {
@@ -81,6 +84,14 @@ public class DynMapDebuger implements ModInitializer {
             set.setMinZoom(0);
             set.setMaxZoom(10);
         }
+
+        // Check if the marker already exists in the marker set
+        AreaMarker existingMarker = set.findAreaMarker(markerId);
+        if (existingMarker != null) {
+            // Marker already exists, no need to create a new one
+            LOGGER.info(logHeader + "AREA MARKER ALL READY CREATED: " + markerId);
+            return;
+        }
     
         // Create a green square area marker for the chunk
         double[] coordinates_1 = {(chunkPos.x + 1) * 16, 0, (chunkPos.z + 1) * 16};
@@ -88,14 +99,14 @@ public class DynMapDebuger implements ModInitializer {
         AreaMarker marker = set.createAreaMarker(
             markerId,
             "Chunk " + chunkPos.x + ", " + chunkPos.z,
-            true,
+            false,
             world.getRegistryKey().getValue().toString(),
             coordinates_1,
             coordinates_2,
-            true
+            false
         );
         marker.setFillStyle(0.5, 0x00FF00); // Green color with 50% transparency
-        
+        // marker.setPersistent(false); // Set the marker as non-persistent
         // Marker marker = set.createMarker(markerId, "<div>"+markerId+"</div>", true, "world", chunkPos.x * 16, (chunkPos.x + 1) * 16, chunkPos.z * 16, null, false);
     }
 
@@ -112,7 +123,7 @@ public class DynMapDebuger implements ModInitializer {
     
         // Create a marker ID based on the dimension and chunk coordinates
         String markerId = dimension + "_" + chunkPos.x + "_" + chunkPos.z;
-        LOGGER.info("CHUNK UNLOADED: " + markerId);
+        // LOGGER.info("CHUNK UNLOADED: " + markerId);
     
         // Check if the marker exists and remove it
         MarkerSet markerSet = markerAPI.getMarkerSet(markerId);
