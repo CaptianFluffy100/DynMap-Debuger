@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "dynmapdebuger",
+  "version": "${version}",
+
+  "name": "DynMap Debuger",
+  "description": "Shows loaded chunks on DynMap",
+  "authors": [
+    "CaptianFluffy100"
+  ],
+  "contact": {
+    "homepage": "https://www.youtube.com/channel/UCcXsyAjLnyNCHhw9cfCd6KQ",
+    "sources": ""
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/dynmapdebuger/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "captianfluffy100.dynmap_debuger.DynMapDebuger"
+    ]
+  },
+  "mixins": [
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.14.17",
+    "fabric-api": "*",
+    "minecraft": "~1.19.3",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
